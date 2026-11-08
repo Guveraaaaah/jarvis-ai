@@ -281,7 +281,7 @@ async function sendMessage() {
 
   } catch (error) {
     console.error(error);
-    reply("I'm having trouble connecting to my AI service. Please try again.");
+    reply(error.message || "Unknown connection error");
     statusText.textContent = "CONNECTION ERROR";
   }
 }
