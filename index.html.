@@ -1,0 +1,308 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#050b16">
+<title>JARVIS AI</title>
+
+<link rel="manifest" href="manifest.json">
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(circle at center, #10243b, #030711 70%);
+  color: #00eaff;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 25px 15px;
+}
+
+h1 {
+  letter-spacing: 8px;
+  font-size: 28px;
+  text-shadow: 0 0 15px #00eaff;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  color: #79b9cc;
+  letter-spacing: 3px;
+  font-size: 10px;
+}
+
+.reactor {
+  width: 190px;
+  height: 190px;
+  border: 2px solid #00eaff;
+  border-radius: 50%;
+  margin: 40px auto 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 20px #00eaff, inset 0 0 25px #00eaff;
+  animation: pulse 2s infinite;
+}
+
+.core {
+  width: 90px;
+  height: 90px;
+  border: 5px solid #8af7ff;
+  border-radius: 50%;
+  background: #00d9ff;
+  box-shadow: 0 0 35px #00eaff;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+
+.status {
+  font-size: 12px;
+  letter-spacing: 3px;
+  margin-bottom: 25px;
+  color: #7af5ff;
+}
+
+.chat {
+  width: 100%;
+  max-width: 500px;
+  border: 1px solid #087c9a;
+  border-radius: 12px;
+  background: rgba(3, 15, 29, 0.85);
+  padding: 15px;
+  min-height: 180px;
+}
+
+#output {
+  min-height: 130px;
+  max-height: 260px;
+  overflow-y: auto;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.user {
+  color: white;
+}
+
+.jarvis {
+  color: #00eaff;
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  max-width: 500px;
+  margin-top: 15px;
+}
+
+input {
+  flex: 1;
+  min-width: 0;
+  background: #08182a;
+  border: 1px solid #087c9a;
+  border-radius: 8px;
+  padding: 13px;
+  color: white;
+  outline: none;
+}
+
+button {
+  background: #00cce8;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 15px;
+  color: #00121c;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.mic {
+  width: 100%;
+  max-width: 500px;
+  margin-top: 10px;
+  background: transparent;
+  color: #00eaff;
+  border: 1px solid #00eaff;
+}
+
+footer {
+  margin-top: 35px;
+  color: #426d82;
+  font-size: 10px;
+  letter-spacing: 2px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>J.A.R.V.I.S</h1>
+<div class="subtitle">JUST A RATHER VERY INTELLIGENT SYSTEM</div>
+
+<div class="reactor">
+  <div class="core"></div>
+</div>
+
+<div class="status" id="status">SYSTEM ONLINE</div>
+
+<div class="chat">
+  <div id="output">
+    <div class="jarvis">JARVIS: Good day. All systems are online. How may I assist you?</div>
+  </div>
+</div>
+
+<div class="controls">
+  <input id="message" type="text" placeholder="Ask me anything..." />
+  <button onclick="sendMessage()">SEND</button>
+</div>
+
+<button class="mic" onclick="startListening()">🎙 ACTIVATE VOICE</button>
+
+<footer>PERSONAL AI INTERFACE • VERSION 1.0</footer>
+
+<script>
+const output = document.getElementById("output");
+const input = document.getElementById("message");
+const statusText = document.getElementById("status");
+
+function addMessage(sender, message, type) {
+  const div = document.createElement("div");
+  div.className = type;
+  div.textContent = sender + ": " + message;
+  output.appendChild(div);
+  output.scrollTop = output.scrollHeight;
+}
+
+function speak(text) {
+  if ("speechSynthesis" in window) {
+    window.speechSynthesis.cancel();
+    const speech = new SpeechSynthesisUtterance(text);
+    speech.rate = 1;
+    speech.pitch = 1;
+    window.speechSynthesis.speak(speech);
+  }
+}
+
+function reply(text) {
+  addMessage("JARVIS", text, "jarvis");
+  speak(text);
+}
+
+function processCommand(text) {
+  const command = text.toLowerCase().trim();
+
+  if (command.includes("hello") || command.includes("hi")) {
+    return "Hello. It is good to hear from you.";
+  }
+
+  if (command.includes("your name")) {
+    return "I am JARVIS, your personal assistant.";
+  }
+
+  if (command.includes("time")) {
+    return "The current time is " +
+      new Date().toLocaleTimeString();
+  }
+
+  if (command.includes("date")) {
+    return "Today's date is " +
+      new Date().toLocaleDateString();
+  }
+
+  if (command.includes("who are you")) {
+    return "I am your personal digital assistant.";
+  }
+
+  if (command.includes("open youtube")) {
+    window.open("https://www.youtube.com", "_blank");
+    return "Opening YouTube.";
+  }
+
+  if (command.includes("open google")) {
+    window.open("https://www.google.com", "_blank");
+    return "Opening Google.";
+  }
+
+  if (command.includes("help")) {
+    return "You can ask me to tell the time, date, introduce myself, or open Google and YouTube.";
+  }
+
+  if (command.includes("calculate")) {
+    return "I can perform basic commands in this prototype, but advanced calculations are not enabled yet.";
+  }
+
+  return "I am still learning. This prototype is not connected to an AI service yet.";
+}
+
+function sendMessage() {
+  const text = input.value.trim();
+
+  if (!text) return;
+
+  addMessage("YOU", text, "user");
+  input.value = "";
+
+  statusText.textContent = "PROCESSING";
+
+  setTimeout(() => {
+    const answer = processCommand(text);
+    reply(answer);
+    statusText.textContent = "SYSTEM ONLINE";
+  }, 400);
+}
+
+input.addEventListener("keydown", function(event) {
+  if (event.key === "Enter") {
+    sendMessage();
+  }
+});
+
+function startListening() {
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    reply("Voice recognition is not supported in this browser. Please try another browser.");
+    return;
+  }
+
+  const recognition = new SpeechRecognition();
+  recognition.lang = "en-IN";
+  recognition.interimResults = false;
+
+  statusText.textContent = "LISTENING...";
+
+  recognition.onresult = function(event) {
+    input.value = event.results[0][0].transcript;
+    sendMessage();
+  };
+
+  recognition.onerror = function() {
+    statusText.textContent = "SYSTEM ONLINE";
+    reply("I could not hear you clearly. Please try again.");
+  };
+
+  recognition.onend = function() {
+    statusText.textContent = "SYSTEM ONLINE";
+  };
+
+  recognition.start();
+}
+</script>
+
+</body>
+</html>
